@@ -1,0 +1,41 @@
+{
+  "name": "kickthemout",
+  "version": "1.0.0",
+  "description": "Kick devices off your network by performing an ARP Spoof attack with Node.js",
+  "main": "index.js",
+  "dependencies": {
+    "arpjs": "^1.1.0",
+    "chalk": "^1.1.3",
+    "figlet": "^1.2.0",
+    "prompt": "^1.0.0"
+  },
+  "devDependencies": {
+    "nsp": "^2.6.2",
+    "standard": "^8.6.0"
+  },
+  "scripts": {
+    "test": "standard && nsp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roccomuso/kickthemout.git"
+  },
+  "keywords": [
+    "arp",
+    "attack",
+    "sniff",
+    "spoofing",
+    "reply",
+    "kick",
+    "devices",
+    "lan",
+    "table",
+    "node"
+  ],
+  "author": "Rocco Musolino",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roccomuso/kickthemout/issues"
+  },
+  "homepage": "https://github.com/roccomuso/kickthemout#readme"
+}
