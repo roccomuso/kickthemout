@@ -1,10 +1,12 @@
 const debug = require('debug')('kickthemout')
-const prompt = require('prompt')
 const async = require('async')
 const chalk = require('chalk')
+const inquirer = require('inquirer')
 const isRoot = require('./lib/utility').isRoot
 const getInterfaces = require('./lib/utility').getInterfaces
 const printLogo = require('./lib/utility').printLogo
+const getIP = require('./lib/utility').getIP
+const scan = require('./lib/scan')
 const arp = require('arpjs')
 
 debug('Debug enabled.')
@@ -25,25 +27,46 @@ async.waterfall([
         callback(null)
       }
     },
-    function(callback) {
-      debug('Getting available interfaces')
-      var interfaces = getInterfaces()
-      var table = new Table()
-      table.push.apply(this, interfaces.map(function(val, i){
-        var a = {}
-        a[i]=val
-        return a}))
-      console.log(table.toString())
-      callback(null, interfaces)
-    },
-    function(interfaces, callback) {
-      prompt.start()
-      prompt.get([{name: 'interface', type: 'string', required: true, enum: interfaces, description: 'Select the network Interface'}], function (err, result) {
-        debug('prompted value:', result)
-        if (err) return console.log(err)
-        arp.setInterface(result)
+    function(callback){
+      arp.table(function(err, table){
+        if (err) debug(err)
+        debug('Local ARP Table:', table)
         callback(null)
       })
+    },
+    function(callback) {
+      var interfaces = getInterfaces()
+      debug('Getting available interfaces', interfaces)
+      if (interfaces.length === 0) return callback('No network interfaces available')
+      inquirer.prompt([{
+          type: 'list',
+          name: 'networkInterface',
+          message: 'Select the network interface:',
+          choices: interfaces
+        }]).then(function (answers) {
+        debug('Selected interface:', answers.networkInterface);
+        callback(null, answers.networkInterface)
+      })
+    },
+    function(iface, callback) {
+      debug('Setting ARP interface:', iface)
+      arp.setInterface(result)
+      // starting scan
+      debug('Starting host discovery in LAN')
+      var myIP = getIP(iface)
+      // TODO ...
+      scan(myIP, function(err, hosts){
+        if (err) return callback('Scan error '+ err.toString())
+        debug('hosts found:', hosts)
+        callback(null, hosts)
+      })
+
+      setTimeout(function(){callback(null)}, 5000)
+      
+    },
+    function(hosts, callback){
+      console.log('Gateway X has Y hosts up');
+      // TODO
     }
 ],
 // final result callback
