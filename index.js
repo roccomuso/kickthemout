@@ -6,6 +6,7 @@ const isRoot = require('./lib/utility').isRoot
 const getInterfaces = require('./lib/utility').getInterfaces
 const printLogo = require('./lib/utility').printLogo
 const getIP = require('./lib/utility').getIP
+const Spinner = require('cli-spinner').Spinner
 const scan = require('./lib/scan')
 const arp = require('arpjs')
 
@@ -35,36 +36,45 @@ async.waterfall([
       })
     },
     function(callback) {
-      var interfaces = getInterfaces()
-      debug('Getting available interfaces', interfaces)
-      if (interfaces.length === 0) return callback('No network interfaces available')
-      inquirer.prompt([{
+      getInterfaces(function(err, ifaces, activeIface){
+        if (err) return callback(err)
+        debug('Getting available interfaces', ifaces)
+        if (ifaces.length === 0) return callback('No network interfaces available')
+        inquirer.prompt([{
           type: 'list',
           name: 'networkInterface',
           message: 'Select the network interface:',
-          choices: interfaces
+          choices: ifaces.map(function(i){return {name: i.name, disabled: (i.name === activeIface.name) ? false : 'Not active' }})
         }]).then(function (answers) {
-        debug('Selected interface:', answers.networkInterface);
-        callback(null, answers.networkInterface)
+          debug('Selected interface:', answers.networkInterface);
+          callback(null, activeIface)
+        })
       })
     },
     function(iface, callback) {
       debug('Setting ARP interface:', iface)
-      arp.setInterface(iface)
-      // starting scan
+      arp.setInterface(iface.name)
+
+      var gw = iface.gateway_ip
+      var myIP = iface.ip_address
+
+      // host discovery
       debug('Starting host discovery in LAN')
-      var myIP = getIP(iface)
-      // TODO ...
+      var spinner = new Spinner(' Scanning LAN.. %s');
+      spinner.setSpinnerString('|/-\\')
+      spinner.start()
       scan(myIP, function(err, hosts){
         if (err) return callback('Scan error '+ err.toString())
         debug('hosts found:', hosts)
-        callback(null, hosts)
+        spinner.stop()
+        callback(null, hosts, gw)
       })
 
     },
-    function(hosts, callback){
-      console.log('Gateway X has Y hosts up');
+    function(hosts, gw, callback){
+      console.log(chalk.blue(chalk.green(' \u2713'),'Gateway',chalk.yellow(gw),'has',chalk.green(hosts.length),'hosts up'))
       // TODO
+
     }
 ],
 // final result callback
