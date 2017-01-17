@@ -72,9 +72,23 @@ async.waterfall([
 
     },
     function(hosts, gw, callback){
-      console.log(chalk.blue(chalk.green(' \u2713'),'Gateway',chalk.yellow(gw),'has',chalk.green(hosts.length),'hosts up'))
-      // TODO
-
+      console.log(chalk.blue(chalk.green(' \u2713'),'Gateway',chalk.yellow(gw),'has',chalk.green(hosts.length),'hosts up\n'))
+      // attack options
+      inquirer.prompt([{
+        type: 'list',
+        name: 'attackOption',
+        message: 'Choose an option:',
+        choices: [
+          {name: 'Kick ONE off', value: 'one'},
+          {name: 'Kick SOME off', value: 'some'},
+          {name: 'Kick ALL off', value: 'all'},
+          new inquirer.Separator(),
+          {name: 'Exit KickThemOut\n', value: 'exit'},
+        ]
+      }]).then(function (answers) {
+        debug('Selected option:', answers.attackOption);
+        callback(null, answers.attackOption)
+      })
     }
 ],
 // final result callback
