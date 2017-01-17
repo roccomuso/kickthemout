@@ -4,7 +4,7 @@ const chalk = require('chalk')
 const inquirer = require('inquirer')
 const isRoot = require('./lib/utility').isRoot
 const getInterfaces = require('./lib/utility').getInterfaces
-const printLogo = require('./lib/utility').printLogo
+const printLogoAndCredits = require('./lib/utility').printLogoAndCredits
 const getIP = require('./lib/utility').getIP
 const Spinner = require('cli-spinner').Spinner
 const scan = require('./lib/scan')
@@ -14,17 +14,18 @@ debug('Debug enabled.')
 
 async.waterfall([
     function(callback) {
-      debug('Printing logo')
-      printLogo(function(logo){
-        console.log(logo)
+      debug('Printing logo and credits')
+      printLogoAndCredits(function(ascii){
+        console.log(ascii)
         callback(null)
       })
     },
     function(callback) {
-      debug('Running as root?', isRoot())
+      // root permission required
       if (!isRoot()) {
         callback('root permission required')
       }else{
+        console.log(chalk.green(' \u2713 Running as', chalk.blue('root\n')))
         callback(null)
       }
     },
@@ -40,11 +41,13 @@ async.waterfall([
         if (err) return callback(err)
         debug('Getting available interfaces', ifaces)
         if (ifaces.length === 0) return callback('No network interfaces available')
+        var interfaces = ifaces.map(function(i){return {name: i.name, disabled: (i.name === activeIface.name) ? false : 'Not active' }})
+        interfaces.push(new inquirer.Separator('\n'))
         inquirer.prompt([{
           type: 'list',
           name: 'networkInterface',
-          message: 'Select the network interface:',
-          choices: ifaces.map(function(i){return {name: i.name, disabled: (i.name === activeIface.name) ? false : 'Not active' }})
+          message: 'Select the network Interface:',
+          choices: interfaces
         }]).then(function (answers) {
           debug('Selected interface:', answers.networkInterface);
           callback(null, activeIface)
