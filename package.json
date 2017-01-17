@@ -16,6 +16,7 @@
     "figlet": "^1.2.0",
     "getmac": "^1.2.1",
     "inquirer": "^2.0.0",
+    "lodash": "^4.17.4",
     "network": "^0.3.0",
     "node-arp": "^1.0.5"
   },
