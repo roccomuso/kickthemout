@@ -50,7 +50,7 @@ async.waterfall([
     },
     function(iface, callback) {
       debug('Setting ARP interface:', iface)
-      arp.setInterface(result)
+      arp.setInterface(iface)
       // starting scan
       debug('Starting host discovery in LAN')
       var myIP = getIP(iface)
@@ -61,8 +61,6 @@ async.waterfall([
         callback(null, hosts)
       })
 
-      setTimeout(function(){callback(null)}, 5000)
-      
     },
     function(hosts, callback){
       console.log('Gateway X has Y hosts up');
