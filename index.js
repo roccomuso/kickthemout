@@ -1,4 +1,5 @@
 const debug = require('debug')('kickthemout')
+const _ = require('lodash')
 const async = require('async')
 const chalk = require('chalk')
 const inquirer = require('inquirer')
@@ -37,28 +38,27 @@ async.waterfall([
       })
     },
     function(callback) {
-      getInterfaces(function(err, ifaces, activeIface){
+      getInterfaces(function(err, ifaces){
         if (err) return callback(err)
         debug('Getting available interfaces', ifaces)
         if (ifaces.length === 0) return callback('No network interfaces available')
-        var interfaces = ifaces.map(function(i){return {name: i.name, disabled: (i.name === activeIface.name) ? false : 'Not active' }})
+        var interfaces = ifaces.map(function(i){return {name: i.name, value: i}})
         interfaces.push(new inquirer.Separator('\n'))
         inquirer.prompt([{
           type: 'list',
-          name: 'networkInterface',
+          name: 'iface',
           message: 'Select the network Interface:',
           choices: interfaces
         }]).then(function (answers) {
-          debug('Selected interface:', answers.networkInterface);
-          callback(null, activeIface)
+          debug('Selected interface:', answers.iface);
+          callback(null, answers.iface)
         })
       })
     },
     function(iface, callback) {
-      debug('Setting ARP interface:', iface)
+      debug('Selecting this interface for ARP Spoofing...')
       arp.setInterface(iface.name)
 
-      var gw = iface.gateway_ip
       var myIP = iface.ip_address
 
       // host discovery
@@ -70,12 +70,16 @@ async.waterfall([
         if (err) return callback('Scan error '+ err.toString())
         debug('hosts found:', hosts)
         spinner.stop()
-        callback(null, hosts, gw)
+        // adding iface mac
+        iface.gateway_mac_address = (_.find(hosts, {'ip': iface.gateway_ip})).mac
+        // removing ourself and the iface ip from targetHosts.
+        _.remove(hosts, function(host){ return host.ip === myIP || host.ip === iface.gateway_ip})
+        callback(null, hosts, iface)
       })
 
     },
-    function(hosts, gw, callback){
-      console.log(chalk.blue(chalk.green(' \u2713'),'Gateway',chalk.yellow(gw),'has',chalk.green(hosts.length),'hosts up\n'))
+    function(hosts, iface, callback){
+      console.log(chalk.blue(chalk.green(' \u2713'),'Gateway',chalk.yellow(iface.gateway_ip),'has',chalk.green(hosts.length),'hosts up\n'))
       // attack options
       inquirer.prompt([{
         type: 'list',
@@ -90,8 +94,11 @@ async.waterfall([
         ]
       }]).then(function (answers) {
         debug('Selected option:', answers.attackOption);
-        callback(null, answers.attackOption)
+        callback(null, hosts, iface, answers.attackOption)
       })
+    },
+    function(hosts, iface, attackOption, callback){
+
     }
 ],
 // final result callback
