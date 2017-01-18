@@ -3,15 +3,20 @@ const _ = require('lodash')
 const async = require('async')
 const chalk = require('chalk')
 const inquirer = require('inquirer')
+const updateNotifier = require('update-notifier')
+const pkg = require('./package.json')
 const isRoot = require('./lib/utility').isRoot
 const getInterfaces = require('./lib/utility').getInterfaces
 const printLogoAndCredits = require('./lib/utility').printLogoAndCredits
-const getIP = require('./lib/utility').getIP
+const macVendor = require('./lib/macVendor')
+const attack = require('./lib/utility').attack
 const Spinner = require('cli-spinner').Spinner
 const scan = require('./lib/scan')
 const arp = require('arpjs')
 
 debug('Debug enabled.')
+// Checks for available update and returns an instance
+const notifier = updateNotifier({pkg})
 
 async.waterfall([
     function(callback) {
@@ -29,6 +34,32 @@ async.waterfall([
         console.log(chalk.green(' \u2713 Running as', chalk.blue('root\n')))
         callback(null)
       }
+    },
+    function(callback){
+      // Notify any update
+      notifier.notify()
+      callback(null)
+    },
+    function(callback){
+      inquirer.prompt([{
+        type: 'list',
+        name: 'choice',
+        message: 'What to do?',
+        choices: ['Start KickThemOut',
+        new inquirer.Separator(),
+        {name: 'Update MAC Vendors DB', value: 'oui'}]
+      }]).then(function (answers) {
+        debug('Choice:', answers.choice);
+        if (answers.choice === 'oui'){
+          macVendor.ouiUpdate(function(err, mex){
+            if (err) return callback(err)
+            console.log(mex)
+            process.exit(0)
+          })
+        }else{
+          callback(null)
+        }
+      })
     },
     function(callback){
       arp.table(function(err, table){
@@ -50,7 +81,7 @@ async.waterfall([
           message: 'Select the network Interface:',
           choices: interfaces
         }]).then(function (answers) {
-          debug('Selected interface:', answers.iface);
+          debug('Selected interface:', answers.iface)
           callback(null, answers.iface)
         })
       })
@@ -74,7 +105,12 @@ async.waterfall([
         iface.gateway_mac_address = (_.find(hosts, {'ip': iface.gateway_ip})).mac
         // removing ourself and the iface ip from targetHosts.
         _.remove(hosts, function(host){ return host.ip === myIP || host.ip === iface.gateway_ip})
-        callback(null, hosts, iface)
+        // getting target hosts' vendors (new prop. vendor)
+        macVendor.get(function(err, newHosts){
+          if (err) return callback(err)
+          hosts = newHosts
+          callback(null, hosts, iface)
+        })
       })
 
     },
@@ -93,11 +129,24 @@ async.waterfall([
           {name: 'Exit KickThemOut\n', value: 'exit'},
         ]
       }]).then(function (answers) {
-        debug('Selected option:', answers.attackOption);
+        debug('Selected option:', answers.attackOption)
         callback(null, hosts, iface, answers.attackOption)
       })
     },
     function(hosts, iface, attackOption, callback){
+      // TODO
+
+
+      inquirer.prompt([{
+        type: 'list',
+        name: 'targetHosts',
+        message: 'Select target hosts:',
+        choices: []
+      }]).then(function (answers) {
+        debug('Selected hosts:', answers.targetHosts)
+        callback(null, hosts, iface, answers.targetHosts)
+      })
+
 
     }
 ],
@@ -109,11 +158,6 @@ function(err, results) {
 });
 
 /*
-arp.setInterface('wlp2s0')
-
-arp.table(function(err, table){
-  console.log(table)
-})
 
 setInterval(function(){
   arp.poison('192.168.0.100', '192.168.0.1')
