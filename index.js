@@ -3,7 +3,7 @@ const _ = require('lodash')
 const async = require('async')
 const chalk = require('chalk')
 const inquirer = require('inquirer')
-const updateNotifier = require('update-notifier')
+const latestVersion = require('latest-version')
 const pkg = require('./package.json')
 const isRoot = require('./lib/utility').isRoot
 const getInterfaces = require('./lib/utility').getInterfaces
@@ -15,8 +15,6 @@ const scan = require('./lib/scan')
 const arp = require('arpjs')
 
 debug('Debug enabled.')
-// Checks for available update and returns an instance
-const notifier = updateNotifier({pkg})
 
 async.waterfall([
     function(callback) {
@@ -36,9 +34,12 @@ async.waterfall([
       }
     },
     function(callback){
-      // Notify any update
-      notifier.notify()
-      callback(null)
+      debug('Checks for available update..')
+      latestVersion(pkg.name).then(function(version){
+        debug('Current version:', pkg.version, '- Latest version:', version)
+        if (require('semver').lt(pkg.version, version)) console.log('  Update available '+chalk.gray(pkg.version)+' → '+chalk.green(version)+'\n')
+        callback(null)
+      }).catch(callback)
     },
     function(callback){
       inquirer.prompt([{
