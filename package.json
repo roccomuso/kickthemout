@@ -1,6 +1,6 @@
 {
   "name": "kickthemout",
-  "version": "1.0.0",
+  "version": "0.0.9",
   "description": "Kick devices off your network by performing an ARP Spoof attack with Node.js",
   "main": "index.js",
   "preferGlobal": true,
@@ -16,11 +16,12 @@
     "figlet": "^1.2.0",
     "getmac": "^1.2.1",
     "inquirer": "^2.0.0",
+    "latest-version": "^2.0.0",
     "lodash": "^4.17.4",
     "network": "^0.3.0",
     "node-arp": "^1.0.5",
     "oui": "^4.4.20",
-    "update-notifier": "^1.0.3"
+    "semver": "^5.3.0"
   },
   "devDependencies": {
     "nsp": "^2.6.2",
