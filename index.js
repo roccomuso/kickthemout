@@ -9,7 +9,7 @@ const isRoot = require('./lib/utility').isRoot
 const getInterfaces = require('./lib/utility').getInterfaces
 const printLogoAndCredits = require('./lib/utility').printLogoAndCredits
 const macVendor = require('./lib/macVendor')
-const attack = require('./lib/utility').attack
+const Attack = require('./lib/Attack')
 const Spinner = require('cli-spinner').Spinner
 const scan = require('./lib/scan')
 const arp = require('arpjs')
@@ -136,7 +136,15 @@ async.waterfall([
     function(hosts, iface, attackOption, callback){
       // TODO
 
+      if (attackOption === 'exit') process.exit(0)
+      if (attackOption === 'one' || attackOption === 'all'){
 
+      }
+      var attack = new Attack(iface)
+      attack.setTarget(hosts)
+            .start()
+
+      // TODO
       inquirer.prompt([{
         type: 'list',
         name: 'targetHosts',
