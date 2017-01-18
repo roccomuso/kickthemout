@@ -91,28 +91,14 @@ async.waterfall([
       })
     },
     function(callback){
-      var hosts = network.hosts
-      var iface = network.iface
       console.log(chalk.blue(chalk.green(' \u2713'),'Gateway',chalk.yellow(iface.gateway_ip),'has',chalk.green(hosts.length),'hosts up\n'))
       // attack options
-      inquirer.prompt([{
-        type: 'list',
-        name: 'attackOption',
-        message: 'Choose an option:',
-        choices: [
-          {name: 'Kick ONE off', value: 'one'},
-          {name: 'Kick SOME off', value: 'some'},
-          {name: 'Kick ALL off', value: 'all'},
-          new inquirer.Separator(),
-          {name: 'Exit KickThemOut\n', value: 'exit'},
-        ]
-      }]).then(function (answers) {
-        debug('Selected option:', answers.attackOption)
-        callback(null, hosts, iface, answers.attackOption)
-      })
+      ask.attackOption(callback)
     },
-    function(hosts, iface, attackOption, callback){
+    function(attackOption, callback){
       if (attackOption === 'exit') process.exit(0)
+      var hosts = network.hosts
+      var iface = network.iface
 
       /*
       // TODO
