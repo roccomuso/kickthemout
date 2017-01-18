@@ -8,7 +8,7 @@ const pkg = require('./package.json')
 const isRoot = require('./lib/utility').isRoot
 const getInterfaces = require('./lib/utility').getInterfaces
 const printLogoAndCredits = require('./lib/utility').printLogoAndCredits
-const macVendor = require('./lib/macVendor')
+const vendors = require('./lib/vendors')
 const Attack = require('./lib/Attack')
 const Spinner = require('cli-spinner').Spinner
 const scan = require('./lib/scan')
@@ -51,7 +51,7 @@ async.waterfall([
       }]).then(function (answers) {
         debug('Choice:', answers.choice);
         if (answers.choice === 'oui'){
-          macVendor.ouiUpdate(function(err, mex){
+          vendors.ouiUpdate(function(err, mex){
             if (err) return callback(err)
             console.log(mex)
             process.exit(0)
@@ -96,7 +96,7 @@ async.waterfall([
         // removing ourself and the iface ip from targetHosts.
         _.remove(hosts, function(host){ return host.ip === myIP || host.ip === iface.gateway_ip})
         // getting target hosts' vendors (new prop. vendor)
-        macVendor.get(function(err, newHosts){
+        vendors.get(function(err, newHosts){
           if (err) return callback(err)
           hosts = newHosts
           callback(null, hosts, iface)
