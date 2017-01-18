@@ -84,7 +84,7 @@ async.waterfall([
 
       // host discovery
       debug('Starting host discovery in LAN')
-      var spinner = new Spinner(' Scanning LAN.. %s');
+      var spinner = new Spinner('  Scanning LAN.. %s');
       spinner.setSpinnerString('|/-\\')
       spinner.start()
       scan(myIP, function(err, hosts){
