@@ -6,15 +6,18 @@ const inquirer = require('inquirer')
 const latestVersion = require('latest-version')
 const pkg = require('./package.json')
 const isRoot = require('./lib/utility').isRoot
-const getInterfaces = require('./lib/utility').getInterfaces
 const printLogoAndCredits = require('./lib/utility').printLogoAndCredits
 const vendors = require('./lib/vendors')
 const Attack = require('./lib/Attack')
+const Network = require('./lib/Network')
+const Inquiries = require('./lib/Inquiries')
 const Spinner = require('cli-spinner').Spinner
-const scan = require('./lib/scan')
 const arp = require('arpjs')
 
 debug('Debug enabled.')
+
+const network = new Network()
+const ask = new Inquiries()
 
 async.waterfall([
     function(callback) {
@@ -42,78 +45,54 @@ async.waterfall([
       }).catch(callback)
     },
     function(callback){
-      inquirer.prompt([{
-        type: 'list',
-        name: 'choice',
-        message: 'What to do?',
-        choices: ['Start KickThemOut',
-        new inquirer.Separator(),
-        {name: 'Update MAC Vendors DB', value: 'oui'}]
-      }]).then(function (answers) {
-        debug('Choice:', answers.choice);
-        if (answers.choice === 'oui'){
-          vendors.ouiUpdate(function(err, mex){
-            if (err) return callback(err)
-            console.log(mex)
-            process.exit(0)
-          })
-        }else{
-          callback(null)
-        }
+      // starting questions
+      ask.whatToDo(callback)
+    },
+    function(callback) {
+      // get Interfaces
+      network.getInterfaces(callback)
+    },
+    function(ifaces, callback) {
+      // select Interface
+      ask.selectInterface(ifaces, function(err, iface){
+        if (err) return callback(err)
+        network.selectInterface(iface)
+        callback(null)
       })
     },
     function(callback) {
-      getInterfaces(function(err, ifaces){
-        if (err) return callback(err)
-        debug('Getting available interfaces', ifaces)
-        if (ifaces.length === 0) return callback('No network interfaces available')
-        var interfaces = ifaces.map(function(i){return {name: i.name, value: i}})
-        interfaces.push(new inquirer.Separator('\n'))
-        inquirer.prompt([{
-          type: 'list',
-          name: 'iface',
-          message: 'Select the network Interface:',
-          choices: interfaces
-        }]).then(function (answers) {
-          debug('Selected interface:', answers.iface)
-          callback(null, answers.iface)
-        })
-      })
-    },
-    function(iface, callback) {
+      // host discovery
+      var iface = network.iface
       var myIP = iface.ip_address
 
-      // host discovery
-      debug('Starting host discovery in LAN')
       var spinner = new Spinner('  Scanning LAN.. %s');
       spinner.setSpinnerString('|/-\\')
       spinner.start()
-      scan(myIP, function(err, hosts){
-        if (err) return callback('Scan error '+ err.toString())
+      network.scan(myIP, function(hosts){
         debug('hosts found:', hosts)
+        if (!hosts.length) return callback('No hosts found!')
         spinner.stop()
         // adding iface mac
-        iface.gateway_mac_address = (_.find(hosts, {'ip': iface.gateway_ip})).mac
+        network.iface.gateway_mac_address = (_.find(hosts, {'ip': iface.gateway_ip})).mac
         // removing ourself and the iface ip from targetHosts.
-        _.remove(hosts, function(host){ return host.ip === myIP || host.ip === iface.gateway_ip})
+        _.remove(network.hosts, function(host){ return host.ip === myIP || host.ip === iface.gateway_ip})
         // getting target hosts' vendors (new prop. vendor)
-        vendors.get(function(err, newHosts){
-          if (err) return callback(err)
-          hosts = newHosts
-          callback(null, hosts, iface)
-        })
+        network.resolveVendors()
+        callback(null)
       })
 
     },
-    function(hosts, iface, callback){
+    function(callback){
       arp.table(function(err, table){
         // now refreshed by Ping sweep
         if (err) debug(err)
         debug('Local ARP Table:', table)
-        callback(null, hosts, iface)
+        callback(null)
       })
     },
-    function(hosts, iface, callback){
+    function(callback){
+      var hosts = network.hosts
+      var iface = network.iface
       console.log(chalk.blue(chalk.green(' \u2713'),'Gateway',chalk.yellow(iface.gateway_ip),'has',chalk.green(hosts.length),'hosts up\n'))
       // attack options
       inquirer.prompt([{
