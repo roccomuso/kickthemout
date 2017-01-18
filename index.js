@@ -61,13 +61,6 @@ async.waterfall([
         }
       })
     },
-    function(callback){
-      arp.table(function(err, table){
-        if (err) debug(err)
-        debug('Local ARP Table:', table)
-        callback(null)
-      })
-    },
     function(callback) {
       getInterfaces(function(err, ifaces){
         if (err) return callback(err)
@@ -87,9 +80,6 @@ async.waterfall([
       })
     },
     function(iface, callback) {
-      debug('Selecting this interface for ARP Spoofing...')
-      arp.setInterface(iface.name)
-
       var myIP = iface.ip_address
 
       // host discovery
@@ -115,6 +105,14 @@ async.waterfall([
 
     },
     function(hosts, iface, callback){
+      arp.table(function(err, table){
+        // now refreshed by Ping sweep
+        if (err) debug(err)
+        debug('Local ARP Table:', table)
+        callback(null, hosts, iface)
+      })
+    },
+    function(hosts, iface, callback){
       console.log(chalk.blue(chalk.green(' \u2713'),'Gateway',chalk.yellow(iface.gateway_ip),'has',chalk.green(hosts.length),'hosts up\n'))
       // attack options
       inquirer.prompt([{
@@ -134,14 +132,17 @@ async.waterfall([
       })
     },
     function(hosts, iface, attackOption, callback){
+      if (attackOption === 'exit') process.exit(0)
+
+      /*
       // TODO
 
-      if (attackOption === 'exit') process.exit(0)
       if (attackOption === 'one' || attackOption === 'all'){
 
       }
-      var attack = new Attack(iface)
-      attack.setTarget(hosts)
+      var attack = new Attack()
+      attack.setInterface(iface)
+            .setTarget(hosts)
             .start()
 
       // TODO
@@ -157,6 +158,7 @@ async.waterfall([
 
 
     }
+    */
 ],
 // final result callback
 function(err, results) {
