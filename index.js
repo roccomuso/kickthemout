@@ -155,10 +155,10 @@ async.waterfall([
         debug('Selected hosts:', answers.targetHosts)
         callback(null, hosts, iface, answers.targetHosts)
       })
+      */
 
 
     }
-    */
 ],
 // final result callback
 function(err, results) {
