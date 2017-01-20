@@ -20,7 +20,7 @@
     "lodash": "^4.17.4",
     "network": "^0.3.0",
     "node-arp": "^1.0.5",
-    "oui": "^4.4.20",
+    "oui": "^5.0.1",
     "semver": "^5.3.0"
   },
   "devDependencies": {
