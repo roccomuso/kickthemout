@@ -3,8 +3,7 @@ const _ = require('lodash')
 const async = require('async')
 const chalk = require('chalk')
 const inquirer = require('inquirer')
-const latestVersion = require('latest-version')
-const pkg = require('./package.json')
+const checkForUpdate = require('./lib/utility').checkForUpdate
 const isRoot = require('./lib/utility').isRoot
 const printLogoAndCredits = require('./lib/utility').printLogoAndCredits
 const vendors = require('./lib/vendors')
@@ -32,17 +31,13 @@ async.waterfall([
       if (!isRoot()) {
         callback('root permission required')
       }else{
-        console.log(chalk.green(' \u2713 Running as', chalk.blue('root\n')))
+        console.log(chalk.green('  \u2713 Running as', chalk.blue('root\n')))
         callback(null)
       }
     },
     function(callback){
       debug('Checks for available update..')
-      latestVersion(pkg.name).then(function(version){
-        debug('Current version:', pkg.version, '- Latest version:', version)
-        if (require('semver').lt(pkg.version, version)) console.log('  Update available '+chalk.gray(pkg.version)+' → '+chalk.green(version)+'\n')
-        callback(null)
-      }).catch(callback)
+      checkForUpdate(callback)
     },
     function(callback){
       // starting questions
