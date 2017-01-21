@@ -93,36 +93,16 @@ async.waterfall([
     function(callback){
       console.log(chalk.blue(chalk.green(' \u2713'),'Gateway',chalk.yellow(iface.gateway_ip),'has',chalk.green(hosts.length),'hosts up\n'))
       // attack options
-      ask.attackOption(callback)
+      ask.attackOption(network.hosts, callback)
     },
-    function(attackOption, callback){
-      if (attackOption === 'exit') process.exit(0)
+    function(targets, callback){
       var hosts = network.hosts
       var iface = network.iface
 
-      /*
-      // TODO
-
-      if (attackOption === 'one' || attackOption === 'all'){
-
-      }
       var attack = new Attack()
       attack.setInterface(iface)
-            .setTarget(hosts)
+            .setTarget(targets)
             .start()
-
-      // TODO
-      inquirer.prompt([{
-        type: 'list',
-        name: 'targetHosts',
-        message: 'Select target hosts:',
-        choices: []
-      }]).then(function (answers) {
-        debug('Selected hosts:', answers.targetHosts)
-        callback(null, hosts, iface, answers.targetHosts)
-      })
-      */
-
 
     }
 ],
@@ -130,13 +110,4 @@ async.waterfall([
 function(err, results) {
   console.log(chalk.red('Error: '+err))
   debug('Async final results:', results)
-    // results is now equal to ['one', 'two']
 });
-
-/*
-
-setInterval(function(){
-  arp.poison('192.168.0.100', '192.168.0.1')
-}, 6 * 1000)
-
-*/
