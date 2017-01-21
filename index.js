@@ -31,7 +31,7 @@ async.waterfall([
       if (!isRoot()) {
         callback('root permission required')
       }else{
-        console.log(chalk.green('  \u2713 Running as', chalk.blue('root\n')))
+        console.log(chalk.green('  \u2713 Running as', chalk.bold('root')))
         callback(null)
       }
     },
