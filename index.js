@@ -77,6 +77,7 @@ async.waterfall([
       })
 
     },
+    /*
     function(callback){
       arp.table(function(err, table){
         // now refreshed by Ping sweep
@@ -85,6 +86,7 @@ async.waterfall([
         callback(null)
       })
     },
+    */
     function(callback){
       console.log(chalk.blue(chalk.green(' \u2713'),'Gateway',chalk.yellow(network.iface.gateway_ip),'has',chalk.green(network.hosts.length),'hosts up\n'))
       // attack options
