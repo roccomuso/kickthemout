@@ -1,6 +1,6 @@
 {
   "name": "kickthemout",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Kick devices off your network by performing an ARP Spoof attack with Node.js",
   "main": "index.js",
   "preferGlobal": true,
