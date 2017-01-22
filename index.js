@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const debug = require('debug')('kickthemout')
 const _ = require('lodash')
 const async = require('async')
