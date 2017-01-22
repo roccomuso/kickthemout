@@ -38,7 +38,7 @@ or from npm:
 
 ### Verbose mode
 
-    $ DEBUG=kickthemout sudo kickthemout
+    $ sudo DEBUG=kickthemout kickthemout
 
 ## Demo
 
