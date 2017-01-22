@@ -28,7 +28,7 @@
     "standard": "^8.6.0"
   },
   "scripts": {
-    "test": "standard && nsp"
+    "test": "standard && nsp check"
   },
   "repository": {
     "type": "git",
