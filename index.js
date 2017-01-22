@@ -2,16 +2,13 @@ const debug = require('debug')('kickthemout')
 const _ = require('lodash')
 const async = require('async')
 const chalk = require('chalk')
-const inquirer = require('inquirer')
 const checkForUpdate = require('./lib/utility').checkForUpdate
 const isRoot = require('./lib/utility').isRoot
 const printLogoAndCredits = require('./lib/utility').printLogoAndCredits
-const vendors = require('./lib/vendors')
 const Attack = require('./lib/Attack')
 const Network = require('./lib/Network')
 const Inquiries = require('./lib/Inquiries')
 const Spinner = require('cli-spinner').Spinner
-const arp = require('arpjs')
 
 debug('Debug enabled.')
 
@@ -78,7 +75,7 @@ async.waterfall([
   },
     /*
     function(callback){
-      arp.table(function(err, table){
+      require('arpjs').table(function(err, table){
         // now refreshed by Ping sweep
         if (err) debug(err)
         debug('Local ARP Table:', table)
@@ -92,11 +89,9 @@ async.waterfall([
     ask.attackOption(network.hosts, callback)
   },
   function (targets, callback) {
-    var hosts = network.hosts
-    var iface = network.iface
-
+    // starting attack
     var attack = new Attack()
-    attack.setInterface(iface)
+    attack.setInterface(network.iface)
             .setTarget(targets)
             .start()
   }
