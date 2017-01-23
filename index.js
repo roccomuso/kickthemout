@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+'use strict'
 
 const debug = require('debug')('kickthemout:flow')
 const _ = require('lodash')
@@ -86,20 +87,23 @@ async.waterfall([
     },
     */
   function (callback) {
-    console.log(chalk.blue(chalk.green(' \u2713'), 'Gateway', chalk.yellow(network.iface.gateway_ip), 'has', chalk.green(network.hosts.length), 'hosts up\n'))
+    console.log(chalk.blue(chalk.green('\n  \u2713'), 'Gateway', chalk.yellow(network.iface.gateway_ip), 'has', chalk.green(network.hosts.length), 'hosts up\n'))
       // attack options
     ask.attackOption(network.hosts, callback)
   },
-  function (targets, callback) {
+  function (targets) {
     // starting attack
     var attack = new Attack()
     attack.setInterface(network.iface)
             .setTarget(targets)
             .start()
+    console.log(chalk.green('  \u2713'), chalk.blue('Attack running...'))
+    ask.nextStep(attack, 'pause')
   }
 ],
 // final result callback
 function (err, results) {
+  // Never reached
   console.log(chalk.red('Error: ' + err))
   debug('Async final results:', results)
 })
