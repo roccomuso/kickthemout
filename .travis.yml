@@ -6,7 +6,16 @@ node_js:
   - "4.4.0"
   - "6.2.1"
 
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.9
+      - g++-4.9
+
 before_install:
+  - export CC="gcc-4.9" CXX="g++-4.9"
   - sudo apt-get install libpcap-dev
 
 cache:
