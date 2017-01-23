@@ -1,9 +1,9 @@
 # KickThemOut
 Kick devices off your network by performing an ARP Spoof attack with **Node.js**.
 
-[![Standard - JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+[![Build Status](https://travis-ci.org/roccomuso/kickthemout.svg?branch=master)](https://travis-ci.org/roccomuso/kickthemout)
 
-[![NPM](https://nodei.co/npm-dl/kickthemout.png?months=6)](https://nodei.co/npm/kickthemout/)
+[![Standard - JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard) [![NPM](https://nodei.co/npm-dl/kickthemout.png?months=6)](https://nodei.co/npm/kickthemout/)
 
 ## Description
 
