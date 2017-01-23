@@ -1,16 +1,24 @@
 # KickThemOut
 Kick devices off your network by performing an ARP Spoof attack with **Node.js**.
 
+[![Standard - JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
+[![NPM](https://nodei.co/npm-dl/kickthemout.png?months=6)](https://nodei.co/npm/kickthemout/)
+
 ## Description
 
 A tool to kick devices out of your network and **enjoy all the bandwidth for yourself**.
 It allows you to select specific or all devices and ARP spoofs them off your local area network.
 
-Compatible with *Node v4.x.x* and above.
+Compatible with **Node v4.4.0** and above.
 
 Author: **Rocco Musolino**
 
-Image...
+## Demo
+
+Here's a short demo:
+
+[![asciicast](https://asciinema.org/a/100375.png)](https://asciinema.org/a/100375)
 
 ## Installation
 
@@ -18,19 +26,18 @@ Required dependencies:
 
     $ sudo apt-get install libpcap-dev
 
-You can download KickThemOut by cloning the [Git Repo](https://github.com/roccomuso/kickthemout) and simply installing its requirements:
-
-    $ git clone https://github.com/roccomuso/kickthemout.git
-
-    $ cd kickthemout
-
-    $ npm install --production
-
-or from npm:
+Install from **npm**:
 
     $ npm install -g kickthemout
 
 (No sudo required for installation. Just recommended for execution)
+
+Or you can download KickThemOut by cloning the [Git Repo](https://github.com/roccomuso/kickthemout) and simply installing its requirements:
+
+    $ git clone https://github.com/roccomuso/kickthemout.git
+    $ cd kickthemout
+    $ npm install --production
+
 
 ## Usage
 
@@ -40,14 +47,6 @@ or from npm:
 
     $ sudo DEBUG=kickthemout:* kickthemout
 
-## Demo
-
-Here's a short demo:
-
-.. image:: https://nikolaskama.me/content/images/2017/01/kickthemout_asciinema.png
-   :target: https://asciinema.org/a/98200?autoplay=1&loop=1
-
-(For more demos click here <https://asciinema.org/~k4m4>.)
 
 ## Disclaimer
 
