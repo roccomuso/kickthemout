@@ -6,6 +6,9 @@ node_js:
   - "4.4.0"
   - "6.2.1"
 
+before_install:
+  - sudo apt-get install libpcap-dev
+
 cache:
   directories:
     - node_modules
