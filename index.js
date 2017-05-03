@@ -67,8 +67,9 @@ async.waterfall([
       debug('hosts found:', hosts)
       if (!hosts.length) return callback('No hosts found!')
       spinner.stop()
-        // adding iface mac
-      network.iface.gateway_mac_address = (_.find(hosts, {'ip': iface.gateway_ip})).mac
+        // adding iface mac (if found)
+      var gw = _.find(hosts, {'ip': iface.gateway_ip})
+      network.iface.gateway_mac_address = gw ? gw.mac : 'Not found'
         // removing ourself and the iface ip from targetHosts.
       _.remove(network.hosts, function (host) { return host.ip === myIP || host.ip === iface.gateway_ip })
         // getting target hosts' vendors (new prop. vendor)
