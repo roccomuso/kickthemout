@@ -1,7 +1,7 @@
 # KickThemOut
 Kick devices off your network by performing an ARP Spoof attack with **Node.js**.
 
-[![NPM Version](https://img.shields.io/npm/v/kickthemout.svg)](https://www.npmjs.com/package/kickthemout) [![Build Status](https://travis-ci.org/roccomuso/kickthemout.svg?branch=master)](https://travis-ci.org/roccomuso/kickthemout) [![bitHound Overall Score](https://www.bithound.io/github/roccomuso/kickthemout/badges/score.svg)](https://www.bithound.io/github/roccomuso/kickthemout)
+[![NPM Version](https://img.shields.io/npm/v/kickthemout.svg)](https://www.npmjs.com/package/kickthemout) [![Build Status](https://travis-ci.org/roccomuso/kickthemout.svg?branch=master)](https://travis-ci.org/roccomuso/kickthemout) [![bitHound Overall Score](https://www.bithound.io/github/roccomuso/kickthemout/badges/score.svg)](https://www.bithound.io/github/roccomuso/kickthemout) [![Dependency Status](https://david-dm.org/roccomuso/kickthemout.png)](https://david-dm.org/roccomuso/kickthemout)
 
 [![Standard - JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard) [![NPM](https://nodei.co/npm-dl/kickthemout.png?months=6)](https://nodei.co/npm/kickthemout/)
 
