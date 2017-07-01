@@ -21,7 +21,8 @@ const ask = new Inquiries()
 async.waterfall([
   function (callback) {
     debug('Printing logo and credits')
-    printLogoAndCredits(function (ascii) {
+    printLogoAndCredits(function (err, ascii) {
+      if (err) throw err
       console.log(ascii)
       callback(null)
     })
@@ -29,7 +30,7 @@ async.waterfall([
   function (callback) {
       // root permission required
     if (!isRoot()) {
-      callback('root permission required')
+      callback(new Error('root permission required'))
     } else {
       console.log(chalk.green('  \u2713 Running as', chalk.bold('root')))
       callback(null)
@@ -65,7 +66,7 @@ async.waterfall([
     spinner.start()
     network.scan(myIP, function (hosts) {
       debug('hosts found:', hosts)
-      if (!hosts.length) return callback('No hosts found!')
+      if (!hosts.length) return callback(new Error('No hosts found!'))
       spinner.stop()
         // adding iface mac (if found)
       var gw = _.find(hosts, {'ip': iface.gateway_ip})
@@ -105,6 +106,6 @@ async.waterfall([
 // final result callback
 function (err, results) {
   // Never reached
-  console.log(chalk.red('Error: ' + err))
+  console.log(chalk.red('Error: ' + err.message || err))
   debug('Async final results:', results)
 })
