@@ -18,7 +18,7 @@ Author: **Rocco Musolino**
 
 Here's a short demo:
 
-[![asciicast](https://asciinema.org/a/100375.png)](https://asciinema.org/a/100375)
+[![asciicast](https://asciinema.org/a/100375.png)](https://asciinema.org/a/100375) [![Greenkeeper badge](https://badges.greenkeeper.io/realdennis/kickthemout.svg)](https://greenkeeper.io/)
 
 ## Installation
 
