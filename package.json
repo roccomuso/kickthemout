@@ -18,20 +18,19 @@
     "debug": "^3.1.0",
     "figlet": "^1.2.0",
     "getmac": "^1.2.1",
-    "inquirer": "^3.1.1",
-    "latest-version": "^3.1.0",
-    "lodash": "^4.17.4",
-    "network": "^0.3.0",
+    "inquirer": "^6.0.0",
+    "latest-version": "^4.0.0",
+    "lodash": "^4.17.10",
+    "network": "^0.4.1",
     "node-arp": "^1.0.5",
-    "oui": "^6.3.10",
+    "oui": "^8.0.0",
     "semver": "^5.3.0"
   },
   "devDependencies": {
-    "nsp": "^2.6.3",
-    "standard": "^10.0.2"
+    "standard": "^11.0.1"
   },
   "scripts": {
-    "test": "standard && nsp check"
+    "test": "standard"
   },
   "repository": {
     "type": "git",
