@@ -19,7 +19,7 @@
     "figlet": "^1.2.0",
     "getmac": "^1.2.1",
     "inquirer": "^6.0.0",
-    "latest-version": "^4.0.0",
+    "latest-version": "^7.0.0",
     "lodash": "^4.17.10",
     "network": "^0.4.1",
     "node-arp": "^1.0.5",
