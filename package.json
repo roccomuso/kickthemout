@@ -8,11 +8,11 @@
     "kickthemout": "./index.js"
   },
   "engines": {
-    "node": ">=4.8.0"
+    "node": ">=18.0.0"
   },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
   "dependencies": {
     "arpjs": "^1.1.12",
-    "async": "^2.5.0",
     "chalk": "^2.0.1",
     "cli-spinner": "^0.2.6",
     "debug": "^3.1.0",
@@ -20,7 +20,6 @@
     "getmac": "^1.2.1",
     "inquirer": "^6.0.0",
     "latest-version": "^4.0.0",
-    "lodash": "^4.17.10",
     "network": "^0.4.1",
     "node-arp": "^1.0.5",
     "oui": "^8.0.0",
